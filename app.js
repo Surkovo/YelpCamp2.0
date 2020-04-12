@@ -15,8 +15,9 @@ var campgroundRoutes = require("./routes/campgrounds");
 var indexRoutes = require("./routes/index");
 
 var app = express();
+// mongoose.connect(process.env.DATABASEURL,{useNewUrlParser: true,useCreateIndex: true});
 
-mongoose.connect("mongodb+srv://Surkovo:Rooster20@cluster0-wfhrk.mongodb.net/test?retryWrites=true&w=majority",
+mongoose.connect(process.env.DATABASEURL,
 	{useNewUrlParser: true, 
 	useCreateIndex: true
 	}).then(()=>{
