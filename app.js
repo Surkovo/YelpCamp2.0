@@ -16,7 +16,14 @@ var indexRoutes = require("./routes/index");
 
 var app = express();
 
-mongoose.connect("mongodb://localhost:27017/yelp_camp_2",{useNewUrlParser: true});
+mongoose.connect("mongodb+srv://Surkovo:Rooster20@cluster0-wfhrk.mongodb.net/test?retryWrites=true&w=majority",
+	{useNewUrlParser: true, 
+	useCreateIndex: true
+	}).then(()=>{
+		console.log("Connected to Mongo DB Atlas")
+	}).catch(err =>{
+		console.log("ERROR: ", err.messege)
+	});
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
