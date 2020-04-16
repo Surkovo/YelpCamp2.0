@@ -17,7 +17,11 @@ var indexRoutes = require("./routes/index");
 var app = express();
 // mongoose.connect(process.env.DATABASEURL,{useNewUrlParser: true,useCreateIndex: true});
 
-mongoose.connect(process.env.DATABASEURL,
+var url = process.env.DATABASEURL || "mongodb://localhost:27017/yelp_camp";
+
+//console.log(url);
+
+mongoose.connect(url,
 	{useNewUrlParser: true, 
 	useCreateIndex: true
 	}).then(()=>{
@@ -31,7 +35,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
 app.use(flash());
-// seedDB();  // seed dthe database
+seedDB();  // seed dthe database
 
 //PASSPORT CONFIGURATION
 
