@@ -1,8 +1,8 @@
-var mongoose = require("mongoose");
-var Campground = require("./models/campground");
-var Comment   = require("./models/comment");
+const mongoose = require("mongoose");
+const Campground = require("./models/campground");
+const Comment   = require("./models/comment");
  
-var seeds = [
+const seeds = [
     {
         name: "Cloud's Rest", 
         image: "https://farm4.staticflickr.com/3795/10131087094_c1c0a1c859.jpg",
@@ -32,10 +32,10 @@ var seeds = [
     }
 ];
  
-async function seedDB(){
+const seedDB = async ()=>{
     try {
         await Campground.deleteMany({});
-        console.log("campgrouund removed");
+        console.log("campground removed");
         await Comment.deleteMany({});
         console.log("comment removed");
         
@@ -52,7 +52,7 @@ async function seedDB(){
                 });
                 console.log("comment created");
                 campground.comments.push(comment);
-                campground.save();
+                await campground.save();
                 console.log("commment added to campground")
             }
         

@@ -1,31 +1,33 @@
 require('dotenv').config();
 
-var express = require("express");
-var bodyParser = require("body-parser");
-var mongoose = require("mongoose");
-var flash	= require("connect-flash");
-var passport = require("passport");
-var LocalStrategy = require("passport-local");
-var methodOverride = require("method-override");
-var Campground = require("./models/campground");
-var Comment = require("./models/comment");
-var User = require("./models/user");
-var seedDB = require("./seeds");
-//Requring Routes
-var commentRoutes = require("./routes/comments");
-var campgroundRoutes = require("./routes/campgrounds");
-var indexRoutes = require("./routes/index");
+const 	express = require("express");
+const	bodyParser = require("body-parser");
+const 	mongoose = require("mongoose");
+const 	flash	= require("connect-flash");
+const 	passport = require("passport");
+const 	LocalStrategy = require("passport-local");
+const 	methodOverride = require("method-override");
+const 	Campground = require("./models/campground");
+const	Comment = require("./models/comment");
+const 	User = require("./models/user");
+const 	seedDB = require("./seeds");
 
-var app = express();
+//Requring Routes
+const 	commentRoutes = require("./routes/comments");
+const 	campgroundRoutes = require("./routes/campgrounds");
+const 	indexRoutes = require("./routes/index");
+
+const app = express();
 // mongoose.connect(process.env.DATABASEURL,{useNewUrlParser: true,useCreateIndex: true});
 
-var url = process.env.DATABASEURL || "mongodb://localhost:27017/yelp_camp";
+const url = process.env.DATABASEURL || "mongodb://localhost:27017/yelp_camp_2";
 
-//console.log(url);
+console.log(url);
 
 mongoose.connect(url,
 	{useNewUrlParser: true, 
-	useCreateIndex: true
+	useCreateIndex: true,
+	useUnifiedTopology: true
 	}).then(()=>{
 		console.log("Connected to Mongo DB Atlas")
 	}).catch(err =>{

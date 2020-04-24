@@ -1,18 +1,18 @@
-var express = require("express");
-var router = express.Router({mergeParams: true});
-var Campground = require("../models/campground");
-var Comment = require("../models/comment");
-var middleware = require("../middleware");
-var NodeGeocoder = require('node-geocoder');
+const express = require("express");
+const router = express.Router({mergeParams: true});
+const Campground = require("../models/campground");
+const Comment = require("../models/comment");
+const middleware = require("../middleware");
+const NodeGeocoder = require('node-geocoder');
  
-var options = {
+const options = {
   provider: 'google',
   httpAdapter: 'https',
   apiKey: process.env.GEOCODER_API_KEY,
   formatter: null
 };
  
-var geocoder = NodeGeocoder(options);
+const geocoder = NodeGeocoder(options);
 
 // Index route
 router.get("/", (req,res)=>{
@@ -25,15 +25,13 @@ router.get("/", (req,res)=>{
 	});
 });
 
-//CREATE new campground
-
 //CREATE - add new campground to DB
 router.post("/", middleware.isLoggedIn, function(req, res){
 	// get data from form and add to campgrounds array
-	var name = req.body.name;
-	var image = req.body.image;
-	var desc = req.body.description;
-	var author = {
+	let name = req.body.name;
+	let image = req.body.image;
+	let desc = req.body.description;
+	let author = {
 		id: req.user._id,
 		username: req.user.username
 	}
@@ -43,10 +41,10 @@ router.post("/", middleware.isLoggedIn, function(req, res){
 		req.flash('error', 'Invalid address');
 		return res.redirect('back');
 	  }
-	  var lat = data[0].latitude;
-	  var lng = data[0].longitude;
-	  var location = data[0].formattedAddress;
-	  var newCampground = {name: name, image: image, description: desc, author:author, location: location, lat: lat, lng: lng};
+	  let lat = data[0].latitude;
+	  let lng = data[0].longitude;
+	  let location = data[0].formattedAddress;
+	  let newCampground = {name: name, image: image, description: desc, author:author, location: location, lat: lat, lng: lng};
 	  // Create a new campground and save to DB
 	  Campground.create(newCampground, function(err, newlyCreated){
 		  if(err){
@@ -59,32 +57,12 @@ router.post("/", middleware.isLoggedIn, function(req, res){
 	  });
 	});
   });
-// router.post("/",middleware.isLoggedIn, (req,res)=>{
-// 	var name = req.body.name;
-// 	var price = req.body.price;
-// 	var image = req.body.image;
-// 	var desc = req.body.description;
-// 	var author = {
-// 		id: req.user._id,
-// 		username: req.user.username
-// 	};
-// 	var newCampground = {name: name, price: price,image: image, description: desc, author:author};
-// 	// create new campground and save to db;
-// 	Campground.create(newCampground, function(err,allCampgrounds){
-// 		if(err){
-// 			console.log(err);
-// 		} else{
-// 			// redirect back to get page
-// 			res.redirect("/campgrounds");
-// 		}
-// 	});
-// });
 //SHOW new campground 
 router.get("/new",middleware.isLoggedIn, (req,res)=>{
 	res.render("campgrounds/new");
 });
 
-//SHOW shows more infor about one campground
+//SHOW shows more info about one campground
 router.get("/:id", (req, res)=>{
 	// find the campground with provided ID
 	Campground.findById(req.params.id).populate("comments").exec(function(err,foundCampground){
@@ -104,7 +82,6 @@ router.get("/:id/edit", middleware.checkCampgroundOwnership,(req,res)=>{
 	});
 });
 
-//UPDATE CAMPGROUND ROUTE
 // UPDATE CAMPGROUND ROUTE
 router.put("/:id", middleware.checkCampgroundOwnership, function(req, res){
 	geocoder.geocode(req.body.location, function (err, data) {
@@ -128,17 +105,6 @@ router.put("/:id", middleware.checkCampgroundOwnership, function(req, res){
 	  });
 	});
   });
-// router.put("/:id", middleware.checkCampgroundOwnership,(req,res)=>{
-// 	//find and update correct campground
-// 	Campground.findByIdAndUpdate(req.params.id,req.body.campground, (err, updatedCampground)=>{
-// 		if(err){
-// 			res.redirect("/campgrounds");
-// 		} else{
-// 			res.redirect("/campgrounds/" + req.params.id)
-// 		}
-// 	})
-// 	// redirect to show page
-// });
 
 //DESTROY CAMPGROUND
 router.delete("/:id", middleware.checkCampgroundOwnership, (req, res) => {
