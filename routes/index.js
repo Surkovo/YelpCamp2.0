@@ -1,8 +1,8 @@
-var express = require("express");
-var router = express.Router({mergeParams: true});
+const express = require("express");
+const router = express.Router({mergeParams: true});
 
-var passport = require("passport");
-var User = require("../models/user");
+const passport = require("passport");
+const User = require("../models/user");
 
 //Root route
 router.get("/", (req,res)=>{
@@ -14,20 +14,21 @@ router.get("/register", (req,res)=>{
 	res.render("register");
 });
 //handle signup logic
-router.post("/register", (req,res)=>{
-	var newUser = new User({username: req.body.username});
-	User.register(newUser,req.body.password, function(err,user){
-		if(err){
-			req.flash("error", err.message);
-			return res.redirect("/register");
-		} else{
-			passport.authenticate("local")(req,res, function(){
+router.post("/register", async (req,res)=>{
+	try {
+		let newUser = new User({username: req.body.username});
+		let user = await User.register(newUser,req.body.password)
+		passport.authenticate("local")(req,res, ()=>{
 				req.flash("success", "Welcome to Yelpcamp: "+user.username);
 				res.redirect("/campgrounds");
-			});
-		}
-	});
+				});
+	} catch(err){
+		req.flash("error", err.message);
+		return res.redirect("/register");	
+	}
 });
+
+
 
 // show login in form
 router.get("/login", (req,res)=>{

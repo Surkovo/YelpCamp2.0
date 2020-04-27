@@ -1,31 +1,30 @@
-// all the middle
-var Campground = require("../models/campground");
-var Comment = require("../models/comment");
+const Campground = require("../models/campground");
+const Comment = require("../models/comment");
 
-var middlewareObj = {};
+const middlewareObj = {};
 
-middlewareObj.checkCommentOwnership = function (req,res,next){
+middlewareObj.checkCommentOwnership = async (req,res,next) => {
 	if(req.isAuthenticated()){
-		Comment.findById(req.params.comment_id, (err, foundComment)=>{
-			if(err){
-				res.redirect("back");
-			} else{
-				// does user own campground
-				if(foundComment.author.id.equals(req.user._id)){
+		try{
+			let foundComment = await Comment.findById(req.params.comment_id)
+			// does user own campground
+			if(foundComment.author.id.equals(req.user._id)){
 					next();
-				} else {
-					req.flash("error","You don't have permission to do that.");
-					res.redirect("back");
-				}
-			}
-		});
+					} else {
+						req.flash("error","You don't have permission to do that.");
+						res.redirect("back");
+					}
+		} catch(err){
+		res.redirect("back");
+		}
 	} else{
 		req.flash("error","You need to be logged in to do that.");
 		res.redirect("back");
 	}
 };
 
-middlewareObj.isLoggedIn = function(req,res, next){
+
+middlewareObj.isLoggedIn = (req,res,next)=>{
 	if(req.isAuthenticated()){
 		return next();
     } 
@@ -34,22 +33,21 @@ middlewareObj.isLoggedIn = function(req,res, next){
 };
 
 
-middlewareObj.checkCampgroundOwnership = function (req,res,next){
+middlewareObj.checkCampgroundOwnership = async (req,res,next)=>{
 	if(req.isAuthenticated()){
-		Campground.findById(req.params.id, (err, foundCampground)=>{
-			if(err){
-				req.flash("error","Couldn't find campground");
+		try{
+			let foundCampground = await Campground.findById(req.params.id)
+			// does user own campground
+			if(foundCampground.author.id.equals(req.user._id)){
+				next();
+			} else {
+				req.flash("error","You don't have permission");
 				res.redirect("back");
-			} else{
-				// does user own campground
-				if(foundCampground.author.id.equals(req.user._id)){
-					next();
-				} else {
-					req.flash("error","You don't have permission");
-					res.redirect("back");
-				}
 			}
-		});
+		} catch(err){
+			req.flash("error","Couldn't find campground");
+			res.redirect("back");
+		}
 	} else{
 		req.flash("error","You need to be logged in to do that.");
 		res.redirect("back");
